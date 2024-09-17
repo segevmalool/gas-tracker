@@ -1,9 +1,38 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <title>Gas Tracker</title>
+  <script type="module">
+    import { writeGasData, validateGasData, GasDataKey } from './index.mjs';
+
+    window.GasDataKey = GasDataKey;
+
+    document.getElementById('gas-record-form').addEventListener('formdata', (event) => {
+      event.preventDefault();
+      const timeStamp = new Date(event.timeStamp + performance.timeOrigin).toISOString();
+      const gasData = {
+        timeStamp,
+      };
+      for (const [key, value] of event.formData.entries()) {
+        // All the gas tracker data must be numbers
+        gasData[key] = Number(value) || undefined;
+      }
+      validateGasData(gasData);
+      writeGasData(gasData);
+      document.getElementById('gas-data-view').innerText = JSON.stringify(JSON.parse(localStorage.getItem(window.GasDataKey)), null, 2);
+  });
+  </script>
 </head>
 <body>
-I love lemons
+<h2>Record your gas datas:</h2>
+<form id="gas-record-form">
+  <label>Total mileage (miles, read odometer): <input name="carMileage" type="text"></label><br>
+  <label>Gas purchased (gallons): <input name="gasAmount" type="text"></label><br>
+  <label>Gas total cost (dollars): <input name="gasCost" type="text"></label><br>
+  <label><input type="submit"></label>
+</form>
+<hr>
+<h2>Your Gas Data</h2>
+<div id="gas-data-view">JSON.stringify(JSON.parse(localStorage.getItem(window.GasDataKey)), null, 2);</div>
 </body>
 </html>
