@@ -1,10 +1,14 @@
+version: "3.9"
 services:
   frontend:
     build: .
     ports:
-      - 8080:8080
+      - "8080:8080"
     develop:
       watch:
+        - action: sync
+          path: ./gas-tracker-frontend-dist/
+          target: /app/gas-tracker-frontend-dist
         - action: sync
           path: ./index.js
           target: /app/index.js

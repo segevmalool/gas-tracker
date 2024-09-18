@@ -8,4 +8,4 @@ COPY . /app
 WORKDIR /app
 RUN npm install
 
-CMD ["./node_modules/.bin/pm2-dev", "index.js", "--watch"]
+CMD ["./node_modules/.bin/pm2-runtime", "index.js", "--watch"]

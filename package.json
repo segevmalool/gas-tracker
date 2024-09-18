@@ -3,17 +3,26 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "nodemon index.js",
     "deploy": "gcloud app deploy",
+    "clean": "rm -rf gas-tracker-frontend-dist",
     "local:docker:watch": "docker compose up --watch --build",
     "docker:login": "gcloud auth print-access-token | docker login --password-stdin -u oauth2accesstoken https://us-west1-docker.pkg.dev",
     "docker:build-and-push": "docker buildx build --platform=linux/amd64 . -t us-west1-docker.pkg.dev/gas-tracker-435817/gas-tracker/gas-tracker --push",
-    "gcloud:deploy": "gcloud run deploy --image us-west1-docker.pkg.dev/gas-tracker-435817/gas-tracker/gas-tracker"
+    "gcloud:deploy": "gcloud run deploy gas-tracker --image us-west1-docker.pkg.dev/gas-tracker-435817/gas-tracker/gas-tracker --region=us-west1",
+    "webpack:build": "webpack build --watch --config ./webpack.config.js"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "lit": "^3.2.0",
     "pm2": "^5.4.2"
+  },
+  "devDependencies": {
+    "copy-webpack-plugin": "^12.0.2",
+    "nodemon": "^3.1.4",
+    "webpack": "^5.94.0",
+    "webpack-cli": "^5.1.4"
   }
 }

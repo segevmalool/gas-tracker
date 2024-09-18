@@ -37,3 +37,5 @@ export function validateGasData(something) {
     throw new Error('gas tracker gas cost must be number');
   }
 }
+
+export { GasDataView } from './gas-data-view.mjs';
