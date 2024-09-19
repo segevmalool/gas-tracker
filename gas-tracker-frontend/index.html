@@ -3,9 +3,19 @@
   <title>Gas Tracker</title>
   <script type="module" src="gas-tracker-frontend-dist/gas-data-lib.js"></script>
   <script type="text/javascript">
+    function reloadGasDataView() {
+      // Reload the gas data view.
+      for (const gasView of document.getElementsByTagName('gas-data-view')) {
+        gasView.remove();
+      }
+      document.body.appendChild(document.createElement('gas-data-view'));
+    }
+
     function hookGasDataFormEvent() {
       document.getElementById('gas-record-form').addEventListener('formdata', (event) => {
         event.preventDefault();
+
+        // Convert the form data to a regular object.
         const timeStamp = new Date(event.timeStamp + performance.timeOrigin).toISOString();
         const gasData = {
           timeStamp,
@@ -14,8 +24,12 @@
           // All the gas tracker data must be numbers
           gasData[key] = Number(value) || undefined;
         }
+
+        // Validate and persist the data.
         GasDataLib.validateGasData(gasData);
         GasDataLib.writeGasData(gasData);
+
+        reloadGasDataView();
       });
     }
   </script>
@@ -30,6 +44,6 @@
 </form>
 <hr>
 <h2>Your Gas Data</h2>
-<gas-data-view gasData="javascript:localStorage.getItem(GasDataLib.GasDataKey)"></gas-data-view>
+<gas-data-view></gas-data-view>
 </body>
 </html>
