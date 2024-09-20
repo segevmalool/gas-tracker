@@ -2,39 +2,8 @@
 <head>
   <title>Gas Tracker</title>
   <script type="module" src="gas-tracker-frontend-dist/gas-data-lib.js"></script>
-  <script type="text/javascript">
-    function reloadGasDataView() {
-      // Reload the gas data view.
-      for (const gasView of document.getElementsByTagName('gas-data-view')) {
-        gasView.remove();
-      }
-      document.body.appendChild(document.createElement('gas-data-view'));
-    }
-
-    function hookGasDataFormEvent() {
-      document.getElementById('gas-record-form').addEventListener('formdata', (event) => {
-        event.preventDefault();
-
-        // Convert the form data to a regular object.
-        const timeStamp = new Date(event.timeStamp + performance.timeOrigin).toISOString();
-        const gasData = {
-          timeStamp,
-        };
-        for (const [key, value] of event.formData.entries()) {
-          // All the gas tracker data must be numbers
-          gasData[key] = Number(value) || undefined;
-        }
-
-        // Validate and persist the data.
-        GasDataLib.validateGasData(gasData);
-        GasDataLib.writeGasData(gasData);
-
-        reloadGasDataView();
-      });
-    }
-  </script>
 </head>
-<body onload="hookGasDataFormEvent()">
+<body onload="GasDataLib.hookGasDataFormEvent()">
 <h2>Record your gas datas:</h2>
 <form action="javascript:console.log('submitting gas record form')" id="gas-record-form">
   <label>Total mileage (miles, read odometer): <input name="carMileage" type="text"></label><br>
@@ -44,6 +13,6 @@
 </form>
 <hr>
 <h2>Your Gas Data</h2>
-<gas-data-view></gas-data-view>
+<gas-data-dashboard></gas-data-dashboard>
 </body>
 </html>

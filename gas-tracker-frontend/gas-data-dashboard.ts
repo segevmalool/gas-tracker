@@ -1,7 +1,12 @@
 import { LitElement, html, css } from 'lit';
-import { readGasData } from './gas-data-persistence.js';
+import { readGasData } from './gas-data-persistence';
+import type { GasDatum } from './gas-data.types';
 
-export class GasDataView extends LitElement {
+import './gas-data-actions';
+
+export class GasDataDashboard extends LitElement {
+  private gasData;
+
   static styles = css`
       table, td, th {
           border: 1px solid black;
@@ -26,7 +31,7 @@ export class GasDataView extends LitElement {
           <th>Gas Total Cost</th>
           <th>Date and Time</th>
         </tr>
-        ${this.gasData?.map((gasDatum) =>
+        ${this.gasData?.map((gasDatum: GasDatum) =>
             html`
               <tr>
                 <td>${gasDatum.carMileage}</td>
@@ -50,4 +55,4 @@ export class GasDataView extends LitElement {
   }
 }
 
-customElements.define('gas-data-view', GasDataView);
+customElements.define('gas-data-dashboard', GasDataDashboard);
