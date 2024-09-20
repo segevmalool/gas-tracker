@@ -6,7 +6,7 @@ module.exports = {
   target: 'web',
   devtool: false,
   entry: {
-    index: './gas-tracker-frontend/index.mjs',
+    index: './gas-tracker-frontend/index.ts',
   },
   output: {
     path: path.resolve(__dirname, 'gas-tracker-frontend-dist'),
@@ -23,6 +23,11 @@ module.exports = {
     }),
   ],
   resolve: {
-    alias: {},
+    extensions: ['.js', '.ts'],
   },
+  module: {
+    rules: [
+      { test: /\.ts/, loader: 'ts-loader'}
+    ]
+  }
 }
