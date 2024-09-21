@@ -1,7 +1,7 @@
 import { GasDataKey } from './gas-data-constants';
 import type { GasDatum } from './gas-data.types';
 
-export function writeGasData(something: any) {
+export function addGasDatum(something: GasDatum): void {
   let gasRawData = localStorage.getItem(GasDataKey);
   if (!gasRawData) {
     gasRawData = '[]';
@@ -12,11 +12,11 @@ export function writeGasData(something: any) {
   localStorage.setItem(GasDataKey, newGasRawData)
 }
 
-function overwriteGasData(totalThing: any) {
+function overwriteGasData(totalThing: GasDatum[]): void {
   localStorage.setItem(GasDataKey, JSON.stringify(totalThing));
 }
 
-export function readGasData() {
+export function readGasData(): GasDatum[] {
   const rawData = localStorage.getItem(GasDataKey);
 
   if (!rawData) {
@@ -26,11 +26,12 @@ export function readGasData() {
   return JSON.parse(rawData);
 }
 
-export function deleteByTimestamp(timestamp: any) {
+// The timestamp input identifies the record, but it doesn't
+export function deleteByTimestamp(timestamp: string): void {
   let gasData = readGasData();
 
   const indexOfGasRecord = gasData.findIndex((gasRecord: GasDatum) => gasRecord.timeStamp === timestamp);
-  console.log(indexOfGasRecord)
+
   if (indexOfGasRecord < 0) {
     throw new Error('Can\'t find gas record with given timestamp');
   }

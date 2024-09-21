@@ -2,9 +2,11 @@ import { LitElement, html, css } from 'lit';
 import { readGasData, deleteByTimestamp } from './gas-data-persistence';
 import { reloadGasDataDashboard } from './gas-data-view-helpers';
 import type { GasDatum } from './gas-data.types';
+import { state } from 'lit/decorators/state.js';
 
 export class GasDataActions extends LitElement {
-  private gasData;
+  @state()
+  private gasData?: GasDatum[];
 
   static styles = css`
       table, td, th {
@@ -23,11 +25,26 @@ export class GasDataActions extends LitElement {
 
   constructor() {
     super();
+  }
+
+  public async connectedCallback() {
+    super.connectedCallback();
+    await this.readGasData();
+  }
+
+  private async readGasData() {
     this.gasData = readGasData();
   }
 
-  deleteGasRecord(event: any) {
-    deleteByTimestamp(event.target.parentNode.id);
+  private async deleteGasRecord(event: PointerEvent) {
+    const timeStamp = (event.target as HTMLElement)?.id;
+
+    if (!timeStamp) {
+      throw new Error('Failed to delete event, element timestamp does not exist');
+    }
+
+    deleteByTimestamp(timeStamp);
+    await this.readGasData();
     reloadGasDataDashboard();
   }
 
@@ -41,7 +58,7 @@ export class GasDataActions extends LitElement {
             this.gasData?.map((gasDatum: GasDatum) =>
                 html`
                   <tr>
-                    <td id="${gasDatum.timeStamp}"><span @click="${this.deleteGasRecord}">Delete</span></td>
+                    <td><span id="${gasDatum.timeStamp}" @click="${this.deleteGasRecord}">Delete</span></td>
                   </tr>
                 `
             )
