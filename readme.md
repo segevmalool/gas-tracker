@@ -5,9 +5,21 @@ Next, I would like to:
 1. Backend persistence???
 1. Data analysis report using the gas tracker data.
  
+Fifth Day
+1. [DONE] add typescript.
+1. [DONE] hosting cert is good.
+1. [DONE] add google cloud armor with rate limiting rule.
+1. [DONE] refactor the types to remove the view helpers. 
+
+Fourth Day
+1. [DONE] Add an action to delete a record.
+1. [DONE] Present the data in a table.
+1. [DONE] Refactor the frontend to make it more modular.
+1. [ISSUE] The global reload method is meh. It might be nice to add a more feature rich storage option (redux?).
+
 Third Day
-1. [DONE] Add lit element integration for the gas data view table
-1. [DONE] Add webpack build (turned into lib, but next time should try to build as module)
+1. [DONE] Add lit element integration for the gas data view table.
+1. [DONE] Add webpack build (turned into lib, but next time should try to build as module).
 
 Second Day
 1. [DONE] Bundle and serve the frontend with watching for development.
