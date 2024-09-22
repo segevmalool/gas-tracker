@@ -1,5 +1,5 @@
-import { GasDataKey } from './gas-data-constants';
-import type { GasDatum } from './gas-data.types';
+import { GasDataKey } from '../gas-data-constants';
+import type { GasDatum } from '../types/gas-data.types';
 
 export function addGasDatum(something: GasDatum): void {
   let gasRawData = localStorage.getItem(GasDataKey);
