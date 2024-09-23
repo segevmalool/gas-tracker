@@ -2,17 +2,19 @@ import { LitElement, html, css } from 'lit';
 import { createRef, type Ref, ref } from 'lit/directives/ref.js';
 import { state } from 'lit/decorators/state.js';
 
-import { addGasDatum, deleteByTimestamp, readGasData } from '../persistence/gas-data-persistence';
-import type { GasDatum } from '../types/gas-data.types';
+import { GasDataPersistence } from '../persistence/gas-data-persistence';
+import { GasData, GasDataPersistenceEvents, GasDatum } from '../types/gas-data.types';
 
 import { GasDatumSchema } from '../types/gas-data.schema';
 import { validateGasData } from '../validations/gas-data-validations';
+import { Subscription } from 'rxjs';
 
 export class GasDataDashboard extends LitElement {
   private carMileageRef: Ref<HTMLInputElement> = createRef();
   private gasAmountRef: Ref<HTMLInputElement> = createRef();
   private gasCostRef: Ref<HTMLInputElement> = createRef();
 
+  private gasDataSubscription?: Subscription;
 
   @state()
   private gasData?: GasDatum[];
@@ -34,11 +36,22 @@ export class GasDataDashboard extends LitElement {
 
   public async connectedCallback() {
     super.connectedCallback();
-    await this.readGasData();
+    await this.subscribeGasData();
   }
 
-  private async readGasData() {
-    this.gasData = readGasData();
+  public disconnectedCallback() {
+    super.disconnectedCallback();
+    this.gasDataSubscription?.unsubscribe();
+  }
+
+  private async subscribeGasData() {
+    this.gasDataSubscription = GasDataPersistence.getInstance().getGasData$.subscribe((gasDataObservation) => {
+      if (!gasDataObservation.gasData) {
+        throw new Error('received empty gas data')
+      }
+
+      this.gasData = gasDataObservation.gasData;
+    });
   }
 
   private async submitGasDatum(): Promise<void> {
@@ -53,8 +66,7 @@ export class GasDataDashboard extends LitElement {
 
     // Validate and persist the data.
     validateGasData(GasDatumSchema, gasData);
-    addGasDatum(gasData);
-    await this.readGasData();
+    GasDataPersistence.getInstance().emit(GasDataPersistenceEvents.addRecord, gasData);
   }
 
   private async deleteGasRecord(event: PointerEvent) {
@@ -64,8 +76,7 @@ export class GasDataDashboard extends LitElement {
       throw new Error('Failed to delete event, element timestamp does not exist');
     }
 
-    deleteByTimestamp(timeStamp);
-    await this.readGasData();
+    GasDataPersistence.getInstance().emit(GasDataPersistenceEvents.deleteRecordByTimestamp, timeStamp);
   }
 
   private getGasDataTable() {
