@@ -45,7 +45,7 @@ export class GasDataDashboard extends LitElement {
   }
 
   private async subscribeGasData() {
-    this.gasDataSubscription = GasDataPersistence.getInstance().getGasData$.subscribe((gasDataObservation) => {
+    this.gasDataSubscription = GasDataPersistence.getInstance().getGasData$.subscribe((gasDataObservation: GasData) => {
       if (!gasDataObservation.gasData) {
         throw new Error('received empty gas data')
       }
