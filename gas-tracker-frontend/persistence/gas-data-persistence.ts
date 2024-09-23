@@ -1,31 +1,47 @@
 import { EventEmitter } from 'events';
-import { Observable, Subscriber } from 'rxjs';
+import { Connectable, connectable, Observable, ReplaySubject, Subject, Subscriber } from 'rxjs';
 
 import { GasDataKey } from '../gas-data-constants';
 import { GasData, GasDataPersistenceEvents, GasDatum } from '../types/gas-data.types';
 
 // This class combines a rxjs observable with an event emitter in order to provide a pub-sub interface.
+// I didn't use a Subject intentionally. tyvm.
 export class GasDataPersistence extends EventEmitter {
   private static instance: GasDataPersistence;
 
-  private gasData$: Observable<GasData> =
-    new Observable((subscriber: Subscriber<GasData>) => {
-      this.on(GasDataPersistenceEvents.addRecord, (gasDatum: GasDatum) => {
-        this.addGasDatum(gasDatum);
-        subscriber.next({ gasData: this.readGasData() });
-      });
-
-      this.on(GasDataPersistenceEvents.deleteRecordByTimestamp, async (timestamp) => {
-        this.deleteByTimestamp(timestamp)
-        subscriber.next({ gasData: this.readGasData() })
-      });
-
-      subscriber.next({ gasData: this.readGasData() })
-    });
-
-  public get getGasData$() {
+  public get getGasData$(): Connectable<GasData> {
     return this.gasData$;
   }
+
+  public static getInstance() {
+    if (GasDataPersistence.instance) {
+      return GasDataPersistence.instance;
+    }
+
+    GasDataPersistence.instance = new this();
+    GasDataPersistence.instance.getGasData$.connect();
+    return GasDataPersistence.instance;
+  }
+
+  // Called every time a subscription is created.
+  private initializeGasDataObservable(subscriber: Subscriber<GasData>) {
+    this.on(GasDataPersistenceEvents.addRecord, (gasDatum: GasDatum) => {
+      this.addGasDatum(gasDatum);
+      subscriber.next({ gasData: this.readGasData() });
+    });
+
+    this.on(GasDataPersistenceEvents.deleteRecordByTimestamp, async (timestamp) => {
+      this.deleteByTimestamp(timestamp);
+      subscriber.next({ gasData: this.readGasData() });
+    });
+
+    subscriber.next({ gasData: this.readGasData() });
+  }
+
+  private gasData$: Connectable<GasData> =
+    connectable(new Observable(this.initializeGasDataObservable.bind(this)), {
+      connector: () => new ReplaySubject<GasData>(),
+    });
 
   private addGasDatum(something: GasDatum): void {
     let gasRawData = localStorage.getItem(GasDataKey);
@@ -64,14 +80,5 @@ export class GasDataPersistence extends EventEmitter {
     gasData.splice(indexOfGasRecord, 1);
 
     this.overwriteGasData(gasData);
-  }
-
-  public static getInstance() {
-    if (GasDataPersistence.instance) {
-      return GasDataPersistence.instance;
-    }
-
-    GasDataPersistence.instance = new this();
-    return GasDataPersistence.instance;
   }
 }
