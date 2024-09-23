@@ -40,7 +40,7 @@ export class GasDataPersistence extends EventEmitter {
 
   private gasData$: Connectable<GasData> =
     connectable(new Observable(this.initializeGasDataObservable.bind(this)), {
-      connector: () => new ReplaySubject<GasData>(),
+      connector: () => new ReplaySubject<GasData>(1),
     });
 
   private addGasDatum(something: GasDatum): void {
