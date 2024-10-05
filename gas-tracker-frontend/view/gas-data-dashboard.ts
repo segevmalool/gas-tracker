@@ -19,6 +19,12 @@ export class GasDataDashboard extends LitElement {
   @state()
   private gasData?: GasDatum[];
 
+  @state()
+  private showAddRecordForm: boolean = false;
+
+  @state()
+  private showDashboard: boolean = false;
+
   static styles = css`
       table, td, th {
           border: 1px solid black;
@@ -102,26 +108,52 @@ export class GasDataDashboard extends LitElement {
             `
         )}
       </table>
+      <hr>
     `;
   }
 
-  private getGasDatumForm() {
+  private getAddGasDatumForm() {
     return html`
-      <h2>Record your gas datas:</h2>
       <div>
+        <h2>Record your gas datas:</h2>
         <label>Total mileage (miles, read odometer): <input ${ref(this.carMileageRef)} name="carMileage"
                                                             type="text"></label><br>
         <label>Gas purchased (gallons): <input ${ref(this.gasAmountRef)} name="gasAmount" type="text"></label><br>
         <label>Gas total cost (dollars): <input ${ref(this.gasCostRef)} name="gasCost" type="text"></label><br>
         <label><input @click=${this.submitGasDatum} type="submit"></label>
       </div>
+      <hr>
+    `;
+  }
+
+  private getDataVis() {
+    return html`
+      <div>
+        Data analytics coming soon!
+      </div>
+      <hr>
+    `;
+  }
+
+  private getGasDataControlPanel() {
+    return html`
+      <div>
+        <button @click="${() => this.showAddRecordForm = !this.showAddRecordForm}">
+          ${this.showAddRecordForm ? 'Hide' : 'Show'} Add Record Form
+        </button>
+        <button @click="${() => this.showDashboard = !this.showDashboard}">
+          ${this.showDashboard ? 'Hide' : 'Show'} Data Analytics
+        </button>
+      </div>
+      <hr>
     `;
   }
 
   render() {
     return html`
-      ${this.getGasDatumForm()}
-      <hr>
+      ${this.getGasDataControlPanel()}
+      ${this.showAddRecordForm ? this.getAddGasDatumForm() : null}
+      ${this.showDashboard ? this.getDataVis() : null}
       ${this.getGasDataTable()}
     `
   }
