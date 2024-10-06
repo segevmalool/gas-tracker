@@ -1,15 +1,18 @@
 import { LitElement, html, css } from 'lit';
 import { createRef, type Ref, ref } from 'lit/directives/ref.js';
 import { state } from 'lit/decorators/state.js';
+import { Subscription } from 'rxjs';
+
 
 import { GasDataPersistence } from '../persistence/gas-data-persistence';
 import { GasData, GasDataPersistenceEvents, GasDatum } from '../types/gas-data.types';
 
 import { GasDatumSchema } from '../types/gas-data.schema';
 import { validateGasData } from '../validations/gas-data-validations';
-import { Subscription } from 'rxjs';
 
-export class GasDataDashboard extends LitElement {
+import './gas-data-analytics-dashboard';
+
+export class GasDataApp extends LitElement {
   private carMileageRef: Ref<HTMLInputElement> = createRef();
   private gasAmountRef: Ref<HTMLInputElement> = createRef();
   private gasCostRef: Ref<HTMLInputElement> = createRef();
@@ -128,9 +131,7 @@ export class GasDataDashboard extends LitElement {
 
   private getDataVis() {
     return html`
-      <div>
-        Data analytics coming soon!
-      </div>
+      <gas-data-analytics-dashboard></gas-data-analytics-dashboard>
       <hr>
     `;
   }
@@ -159,4 +160,4 @@ export class GasDataDashboard extends LitElement {
   }
 }
 
-customElements.define('gas-data-dashboard', GasDataDashboard);
+customElements.define('gas-data-dashboard', GasDataApp);

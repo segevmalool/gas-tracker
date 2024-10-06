@@ -11,3 +11,5 @@ export enum GasDataPersistenceEvents {
   addRecord = 'addRecord',
   deleteRecordByTimestamp = 'deleteRecordByTimestamp',
 }
+
+export type GasDataMilesPerGallon = { endDateTimestamp: string, mpg: number };

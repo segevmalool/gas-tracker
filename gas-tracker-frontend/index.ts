@@ -1,1 +1,1 @@
-export { GasDataDashboard } from './view/gas-data-dashboard';
+export { GasDataApp } from './view/gas-data-app';
