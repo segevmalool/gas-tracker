@@ -132,7 +132,10 @@ export class GasDataAnalyticsDashboard extends LitElement {
 
   public render() {
     return html`
-      ${this.gasMileagePlot()}
+      <div>
+        <h2>Gas Data Analytics Dashboard</h2>
+        ${this.gasMileagePlot()}
+      </div>
     `;
   }
 

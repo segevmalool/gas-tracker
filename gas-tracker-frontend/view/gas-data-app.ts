@@ -118,7 +118,7 @@ export class GasDataApp extends LitElement {
   private getAddGasDatumForm() {
     return html`
       <div>
-        <h2>Record your gas datas:</h2>
+        <h2>Record your gas datas</h2>
         <label>Total mileage (miles, read odometer): <input ${ref(this.carMileageRef)} name="carMileage"
                                                             type="text"></label><br>
         <label>Gas purchased (gallons): <input ${ref(this.gasAmountRef)} name="gasAmount" type="text"></label><br>
